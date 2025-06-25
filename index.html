@@ -15,40 +15,43 @@
   <p id="status"></p>
 
   <script>
-    function convertSRT(file) {
-      if (!file.name.endsWith('.srt')) {
-        alert('Please upload a .srt file');
-        return;
+function convertSRT(file) {
+  if (!file.name.endsWith('.srt')) {
+    alert('Please upload a .srt file');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const lines = reader.result.split(/\r?\n/);
+    let output = '';
+
+    for (let line of lines) {
+      if (
+        /^\d+$/.test(line.trim()) || // Line number
+        /^\d{2}:\d{2}:\d{2},\d{3}/.test(line.trim()) || // Timestamp
+        line.trim() === ''
+      ) {
+        continue;
       }
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const lines = reader.result.split(/\r?\n/);
-        let output = '';
-
-        for (let line of lines) {
-          if (
-            /^\d+$/.test(line.trim()) || // Line number
-            /^\d{2}:\d{2}:\d{2},\d{3}/.test(line.trim()) || // Timestamp
-            line.trim() === ''
-          ) {
-            continue;
-          }
-          output += line.trim() + ' ';
-        }
-
-        output = output.replace(/\s+/g, ' ').trim();
-
-        const blob = new Blob([output], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = file.name.replace(/\.srt$/i, '.txt');
-        a.click();
-
-        document.getElementById('status').textContent = 'Converted and downloaded!';
-      };
-      reader.readAsText(file);
+      // Remove leading hyphen (and optional space) only
+      let cleanedLine = line.replace(/^\s*-\s*/, '');
+      output += cleanedLine.trim() + ' ';
     }
+
+    output = output.replace(/\s+/g, ' ').trim();
+
+    const blob = new Blob([output], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = file.name.replace(/\.srt$/i, '.txt');
+    a.click();
+
+    document.getElementById('status').textContent = 'Converted and downloaded!';
+  };
+  reader.readAsText(file);
+}
   </script>
 </body>
 </html>
