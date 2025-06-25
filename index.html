@@ -20,3 +20,55 @@
       margin-top: 1em;
       color: green;
     }
+  </style>
+</head>
+<body>
+  <h2>Upload SRT File → Get Plain TXT</h2>
+  <input type="file" accept=".srt" onchange="convertSRT(this.files[0])" />
+  <p id="status"></p>
+
+  <script>
+    function convertSRT(file) {
+      if (!file.name.endsWith('.srt')) {
+        alert('Please upload a .srt file');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const lines = reader.result.split(/\r?\n/);
+        let output = '';
+
+        for (let line of lines) {
+          line = line.trim();
+          if (
+            /^\d+$/.test(line) ||                        // Line number
+            /^\d{2}:\d{2}:\d{2},\d{3}/.test(line) ||      // Timestamp
+            line === ''                                   // Empty line
+          ) {
+            continue;
+          }
+
+          // Remove leading hyphen + space only (e.g., "- Hello" → "Hello")
+          line = line.replace(/^\s*-\s*/, '');
+          output += line + ' ';
+        }
+
+        // Clean up extra spaces
+        output = output.replace(/\s+/g, ' ').trim();
+
+        // Create and trigger .txt file download
+        const blob = new Blob([output], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = file.name.replace(/\.srt$/i, '.txt');
+        a.click();
+
+        document.getElementById('status').textContent = 'Converted and downloaded!';
+      };
+
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>
