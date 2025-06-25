@@ -46,11 +46,13 @@ function convertSRT(file) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = file.name.replace(/\.srt$/i, '.txt');
-    a.click();
+a.click();
 
-    document.getElementById('status').textContent = 'Converted and downloaded!';
-  };
-  reader.readAsText(file);
+// Wait briefly to ensure download starts, then redirect to Grammarly
+setTimeout(() => {
+  window.location.href = 'https://app.grammarly.com/ddocs';
+}, 800);
+
 }
   </script>
 </body>
