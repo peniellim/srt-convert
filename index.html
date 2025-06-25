@@ -18,7 +18,7 @@ function convertSRT(file) {
         continue;
       }
 
-      // Remove leading hyphen (and optional space) only
+      // Remove hyphen only if it's at the beginning
       let cleanedLine = line.replace(/^\s*-\s*/, '');
       output += cleanedLine.trim() + ' ';
     }
@@ -29,9 +29,13 @@ function convertSRT(file) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = file.name.replace(/\.srt$/i, '.txt');
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
 
     document.getElementById('status').textContent = 'Converted and downloaded!';
   };
+
   reader.readAsText(file);
 }
