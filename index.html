@@ -47,11 +47,7 @@ function convertSRT(file) {
     a.href = URL.createObjectURL(blob);
     a.download = file.name.replace(/\.srt$/i, '.txt');
 a.click();
-
-// Wait briefly to ensure download starts, then redirect to Grammarly
-setTimeout(() => {
-  window.location.href = 'https://app.grammarly.com/';
-}, 800);
+document.getElementById('status').textContent = 'Converted and downloaded!';
 
 }
   </script>
