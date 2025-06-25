@@ -1,20 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>SRT to Plain TXT Converter</title>
-  <style>
-    body { font-family: sans-serif; padding: 2em; max-width: 600px; margin: auto; }
-    input { margin-top: 1em; }
-    h2 { color: #333; }
-  </style>
-</head>
-<body>
-  <h2>Upload SRT File → Get Plain TXT</h2>
-  <input type="file" accept=".srt" onchange="convertSRT(this.files[0])" />
-  <p id="status"></p>
-
-  <script>
 function convertSRT(file) {
   if (!file.name.endsWith('.srt')) {
     alert('Please upload a .srt file');
@@ -46,11 +29,9 @@ function convertSRT(file) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = file.name.replace(/\.srt$/i, '.txt');
-a.click();
-document.getElementById('status').textContent = 'Converted and downloaded!';
+    a.click();
 
+    document.getElementById('status').textContent = 'Converted and downloaded!';
+  };
+  reader.readAsText(file);
 }
-  </script>
-</body>
-</html>
-
