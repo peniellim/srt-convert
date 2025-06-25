@@ -1,37 +1,22 @@
-function convertSRT(file) {
-  if (!file.name.endsWith('.srt')) {
-    alert('Please upload a .srt file');
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    const lines = reader.result.split(/\r?\n/);
-    let output = '';
-
-    for (let line of lines) {
-      if (
-        /^\d+$/.test(line.trim()) || // Line number
-        /^\d{2}:\d{2}:\d{2},\d{3}/.test(line.trim()) || // Timestamp
-        line.trim() === ''
-      ) {
-        continue;
-      }
-
-      // Remove leading hyphen (and optional space) only
-      let cleanedLine = line.replace(/^\s*-\s*/, '');
-      output += cleanedLine.trim() + ' ';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SRT to Plain TXT Converter</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2em;
+      max-width: 600px;
+      margin: auto;
     }
-
-    output = output.replace(/\s+/g, ' ').trim();
-
-    const blob = new Blob([output], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = file.name.replace(/\.srt$/i, '.txt');
-    a.click();
-
-    document.getElementById('status').textContent = 'Converted and downloaded!';
-  };
-  reader.readAsText(file);
-}
+    h2 {
+      color: #333;
+    }
+    input {
+      margin-top: 1em;
+    }
+    #status {
+      margin-top: 1em;
+      color: green;
+    }
